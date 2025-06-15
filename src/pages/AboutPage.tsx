@@ -24,13 +24,17 @@ const AboutHero = styled.section`
 const AboutTitle = styled.h1`
   font-size: 3rem;
   margin-bottom: 1rem;
-  font-weight: 700;
+  font-weight: 300;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 1px;
 `;
 
 const AboutSubtitle = styled.p`
   font-size: 1.2rem;
   max-width: 600px;
   margin: 0 auto;
+  font-family: 'Playfair Display', serif;
+  font-weight: 300;
 `;
 
 const ContentSection = styled.section`
@@ -60,11 +64,15 @@ const ContentCard = styled.div`
     font-size: 1.5rem;
     margin-bottom: 1rem;
     color: #000000;
+    font-family: 'Playfair Display', serif;
+    font-weight: 300;
   }
 
   p {
     color: #666;
     line-height: 1.6;
+    font-family: 'Inter', Arial, sans-serif;
+    font-weight: 300;
   }
 `;
 

@@ -35,21 +35,27 @@ const Hero = styled.section`
   text-align: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+  background: #1a1a1a;
   padding: 0 2rem;
-  animation: fadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   transform-origin: center;
 
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.4) 100%);
+    width: 150vmax;
+    height: 150vmax;
+    background: radial-gradient(
+      circle at center,
+      #ffb3b3 0%,
+      #ffc4a3 25%,
+      #ffd699 50%,
+      #ffe699 75%,
+      #fff2cc 100%
+    );
+    opacity: 0.8;
+    filter: blur(80px);
+    animation: sphereMove 20s ease-in-out infinite;
     z-index: 1;
-    animation: gradientMove 8s ease-in-out infinite;
   }
 
   > * {
@@ -57,16 +63,24 @@ const Hero = styled.section`
     z-index: 2;
   }
 
-  @keyframes gradientMove {
+  @keyframes sphereMove {
     0% {
-      background-position: 0% 50%;
+      transform: translate(-50%, -50%) scale(1) rotate(0deg);
     }
-    50% {
-      background-position: 100% 50%;
+    33% {
+      transform: translate(-30%, -40%) scale(1.1) rotate(120deg);
+    }
+    66% {
+      transform: translate(-60%, -30%) scale(0.9) rotate(240deg);
     }
     100% {
-      background-position: 0% 50%;
+      transform: translate(-50%, -50%) scale(1) rotate(360deg);
     }
+  }
+
+  
+  &:hover::before {
+    animation-play-state: paused;
   }
 `;
 
@@ -156,11 +170,11 @@ const MobileMenuButton = styled.button`
   }
 `;
 
-const MobileMenu = styled.div<{ isOpen: boolean }>`
+const MobileMenu = styled.div<{ $isOpen: boolean }>`
   display: none;
   
   @media (max-width: 768px) {
-    display: ${props => props.isOpen ? 'flex' : 'none'};
+    display: ${props => props.$isOpen ? 'flex' : 'none'};
   flex-direction: column;
     position: fixed;
     top: 0;
@@ -255,31 +269,30 @@ const MainContent = styled.div`
 
   > * {
     opacity: 0;
-    transform: translateY(30px);
-    animation: slideUp 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    transform: translateY(60px) scale(0.97);
+    animation: heroStaggerFade 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   }
+  > *:nth-child(1) { animation-delay: 0.6s; }
+  > *:nth-child(2) { animation-delay: 1.0s; }
+  > *:nth-child(3) { animation-delay: 1.4s; }
+  > *:nth-child(4) { animation-delay: 1.8s; }
 
-  @keyframes slideUp {
-    from {
+  @keyframes heroStaggerFade {
+    0% {
       opacity: 0;
-      transform: translateY(30px);
+      transform: translateY(60px) scale(0.97);
+      filter: blur(8px);
     }
-    to {
+    60% {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(-8px) scale(1.01);
+      filter: blur(0px);
     }
-  }
-
-  ${Number} {
-    animation-delay: 0.3s;
-  }
-
-  ${DiscoverText} {
-    animation-delay: 0.6s;
-  }
-
-  ${Title} {
-    animation-delay: 0.9s;
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0px);
+    }
   }
 `;
 
@@ -381,28 +394,26 @@ const Navigation = () => {
       </NavContainer>
 
       <HamburgerMenu 
-        className={isMenuOpen ? 'open' : ''} 
+        $isOpen={isMenuOpen}
         onClick={() => setIsMenuOpen(!isMenuOpen)}
       >
-        <span></span>
-        <span></span>
-        <span></span>
+        <div className="hamburger-bar bar1"></div>
+        <div className="hamburger-bar bar2"></div>
+        <div className="hamburger-bar bar3"></div>
       </HamburgerMenu>
 
-      <MenuOverlay isOpen={isMenuOpen}>
-        <MenuContent isOpen={isMenuOpen}>
+      <MenuOverlay $isOpen={isMenuOpen}>
+        <MenuContent $isOpen={isMenuOpen}>
           <div onClick={() => { navigate('/'); setIsMenuOpen(false); }}>HOME</div>
-          <div onClick={() => { navigate('/category/jeans'); setIsMenuOpen(false); }}>JEANS</div>
-          <div onClick={() => { navigate('/category/t-shirts'); setIsMenuOpen(false); }}>T-SHIRTS</div>
-          <div onClick={() => { navigate('/category/shirts'); setIsMenuOpen(false); }}>SHIRTS</div>
+          <ShopDropdown>
+            <div>SHOP</div>
+            <DropdownContent className="dropdown-content" style={{position: 'static', boxShadow: 'none', background: 'none', minWidth: 'unset', padding: 0, marginTop: 0}}>
+              <div onClick={() => { navigate('/category/jeans'); setIsMenuOpen(false); }}>JEANS</div>
+              <div onClick={() => { navigate('/category/t-shirts'); setIsMenuOpen(false); }}>T-SHIRTS</div>
+            </DropdownContent>
+          </ShopDropdown>
           <div onClick={() => { navigate('/about'); setIsMenuOpen(false); }}>ABOUT</div>
-          <div onClick={() => { navigate('/contact'); setIsMenuOpen(false); }}>CONTACT</div>
           <div onClick={() => { navigate('/cart'); setIsMenuOpen(false); }}>CART</div>
-          {user ? (
-            <div onClick={() => { handleLogout(); setIsMenuOpen(false); }}>LOGOUT</div>
-          ) : (
-            <div onClick={() => { navigate('/auth'); setIsMenuOpen(false); }}>SIGN UP</div>
-          )}
         </MenuContent>
       </MenuOverlay>
     </>
@@ -635,88 +646,51 @@ const FooterLinks = styled.div`
   }
 `;
 
-const HamburgerMenu = styled.div`
+const HamburgerMenu = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   top: 2rem;
   right: 2rem;
-  width: 30px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
   display: none;
-  flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   z-index: 1000;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+
   @media (max-width: 768px) {
     display: flex;
   }
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+
+  .hamburger-bar {
+    position: absolute;
+    left: 8px;
+    width: 24px;
+    height: 1.5px;
+    background: #222;
+    border-radius: 1.5px;
+    transition: all 0.35s cubic-bezier(0.68, -0.6, 0.32, 1.6);
   }
-  
-  span {
-    width: 100%;
-    height: 2px;
-    background: #000;
-    transition: all 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
-    transform-origin: center;
-    border-radius: 2px;
-    position: relative;
-    
-    &::before {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: #FF4500;
-      border-radius: 2px;
-      transform: scaleX(0);
-      transform-origin: right;
-      transition: transform 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
-    }
+  .bar1 {
+    top: 12px;
+    transform: ${({ $isOpen }) => $isOpen ? 'translateY(7px) rotate(45deg)' : 'none'};
   }
-  
-  &:hover span::before {
-    transform: scaleX(1);
-    transform-origin: left;
+  .bar2 {
+    top: 19px;
+    opacity: ${({ $isOpen }) => $isOpen ? 0 : 1};
+    transform: ${({ $isOpen }) => $isOpen ? 'scaleX(0.5)' : 'none'};
   }
-  
-  &.open {
-    background: #000;
-    
-    span {
-      background: #fff;
-      
-      &::before {
-        background: #fff;
-      }
-    }
-    
-    span:nth-child(1) {
-      transform: translateY(9px) rotate(45deg);
-    }
-    
-    span:nth-child(2) {
-      opacity: 0;
-      transform: scale(0);
-    }
-    
-    span:nth-child(3) {
-      transform: translateY(-9px) rotate(-45deg);
-    }
+  .bar3 {
+    top: 26px;
+    transform: ${({ $isOpen }) => $isOpen ? 'translateY(-7px) rotate(-45deg)' : 'none'};
   }
 `;
 
-const MenuOverlay = styled.div<{ isOpen: boolean }>`
+const MenuOverlay = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
@@ -727,16 +701,16 @@ const MenuOverlay = styled.div<{ isOpen: boolean }>`
   justify-content: center;
   align-items: center;
   z-index: 999;
-  opacity: ${({ isOpen }) => isOpen ? 1 : 0};
-  visibility: ${({ isOpen }) => isOpen ? 'visible' : 'hidden'};
+  opacity: ${props => props.$isOpen ? 1 : 0};
+  visibility: ${props => props.$isOpen ? 'visible' : 'hidden'};
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: ${({ isOpen }) => isOpen ? 'blur(10px)' : 'none'};
+  backdrop-filter: ${props => props.$isOpen ? 'blur(10px)' : 'none'};
 `;
 
-const MenuContent = styled.div<{ isOpen: boolean }>`
+const MenuContent = styled.div<{ $isOpen: boolean }>`
   text-align: center;
-  transform: translateY(${props => props.isOpen ? '0' : '20px'});
-  opacity: ${props => props.isOpen ? 1 : 0};
+  transform: translateY(${props => props.$isOpen ? '0' : '20px'});
+  opacity: ${props => props.$isOpen ? 1 : 0};
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
   position: relative;
   z-index: 1001;
@@ -864,7 +838,7 @@ const MenuButton = styled.button`
   margin: 0;
 `;
 
-const MenuIcon = styled.div<{ isOpen: boolean }>`
+const MenuIcon = styled.div<{ $isOpen: boolean }>`
   width: 20px;
   height: 2px;
   background: #000;
@@ -881,13 +855,13 @@ const MenuIcon = styled.div<{ isOpen: boolean }>`
   }
 
   &::before {
-    top: ${props => props.isOpen ? '8px' : '0'};
-    transform: ${props => props.isOpen ? 'rotate(45deg)' : 'none'};
+    top: ${props => props.$isOpen ? '8px' : '0'};
+    transform: ${props => props.$isOpen ? 'rotate(45deg)' : 'none'};
   }
 
   &::after {
-    top: ${props => props.isOpen ? '8px' : '0'};
-    transform: ${props => props.isOpen ? 'rotate(-45deg)' : 'none'};
+    top: ${props => props.$isOpen ? '8px' : '0'};
+    transform: ${props => props.$isOpen ? 'rotate(-45deg)' : 'none'};
   }
 `;
 
@@ -920,16 +894,16 @@ const Layout = () => {
   return (
     <AppContainer>
       <HamburgerMenu 
-        className={isMenuOpen ? 'open' : ''} 
+        $isOpen={isMenuOpen}
         onClick={() => setIsMenuOpen(!isMenuOpen)}
       >
-        <span></span>
-        <span></span>
-        <span></span>
+        <div className="hamburger-bar bar1"></div>
+        <div className="hamburger-bar bar2"></div>
+        <div className="hamburger-bar bar3"></div>
       </HamburgerMenu>
       
-      <MenuOverlay isOpen={isMenuOpen}>
-        <MenuContent isOpen={isMenuOpen}>
+      <MenuOverlay $isOpen={isMenuOpen}>
+        <MenuContent $isOpen={isMenuOpen}>
           <Navigation />
         </MenuContent>
       </MenuOverlay>
@@ -1023,22 +997,22 @@ const HomePage = () => {
           <SocialIcons>
             <a href="#" aria-label="Twitter">
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                <path d="M22.46 6c-.77.35-1.6.59-2.47.7a4.3 4.3 0 0 0 1.88-2.37 8.59 8.59 0 0 1-2.72 1.04A4.28 4.28 0 0 0 16.11 4c-2.37 0-4.29 1.92-4.29 4.29 0 .34.04.67.11.99C7.69 9.13 4.07 7.38 1.64 4.7c-.37.64-.58 1.38-.58 2.17 0 1.5.76 2.82 1.92 3.6-.71-.02-1.38-.22-1.97-.54v.05c0 2.1 1.5 3.85 3.5 4.25-.36.1-.74.16-1.13.16-.28 0-.54-.03-.8-.08.54 1.7 2.1 2.94 3.95 2.97A8.6 8.6 0 0 1 2 19.54c-.29 0-.57-.02-.85-.05A12.13 12.13 0 0 0 8.29 21.5c7.55 0 11.68-6.26 11.68-11.68 0-.18-.01-.36-.02-.54A8.18 8.18 0 0 0 24 4.59a8.36 8.36 0 0 1-2.54.7z" />
               </svg>
             </a>
             <a href="#" aria-label="Instagram">
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                <path d="M12 2.2c3.2 0 3.584.012 4.85.07 1.17.054 1.97.24 2.43.41.59.22 1.01.48 1.45.92.44.44.7.86.92 1.45.17.46.36 1.26.41 2.43.058 1.266.07 1.65.07 4.85s-.012 3.584-.07 4.85c-.054 1.17-.24 1.97-.41 2.43-.22.59-.48 1.01-.92 1.45-.44.44-.86.7-1.45.92-.46.17-1.26.36-2.43.41-1.266.058-1.65.07-4.85.07s-3.584-.012-4.85-.07c-1.17-.054-1.97-.24-2.43-.41-.59-.22-1.01-.48-1.45-.92-.44-.44-.7-.86-.92-1.45-.17-.46-.36-1.26-.41-2.43C2.212 15.784 2.2 15.4 2.2 12s.012-3.584.07-4.85c.054-1.17.24-1.97.41-2.43.22-.59.48-1.01.92-1.45.44-.44.86-.7 1.45-.92.46-.17 1.26-.36 2.43-.41C8.416 2.212 8.8 2.2 12 2.2zm0-2.2C8.74 0 8.332.014 7.052.072 2.694.272.272 2.694.072 7.052.014 8.332 0 8.74 0 12c0 3.26.014 3.668.072 4.948.2 4.358 2.622 6.78 6.98 6.98C8.332 23.986 8.74 24 12 24c3.26 0 3.668-.014 4.948-.072 4.358-.2 6.78-2.622 6.98-6.98.058-1.28.072-1.688.072-4.948 0-3.26-.014-3.668-.072-4.948-.2-4.358-2.622-6.78-6.98-6.98C15.668.014 15.26 0 12 0z" />
               </svg>
             </a>
             <a href="#" aria-label="Pinterest">
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 19c-.721 0-1.418-.109-2.073-.312.286-.465.713-1.227.87-1.835l.437-1.664c.229.436.895.804 1.604.804 2.111 0 3.633-1.941 3.633-4.354 0-2.312-1.888-4.042-4.316-4.042-3.021 0-4.625 2.027-4.625 4.235 0 1.027.547 2.305 1.422 2.712.132.062.203.034.234-.094l.193-.793c.017-.071.009-.132-.049-.202-.288-.35-.521-.995-.521-1.597 0-1.544 1.169-3.038 3.161-3.038 1.72 0 2.924 1.172 2.924 2.848 0 1.894-.957 3.205-2.201 3.205-.687 0-1.201-.568-1.036-1.265.197-.833.58-1.73.58-2.331 0-.537-.288-.986-.89-.986-.986-.705 0-1.269.73-1.269 1.708 0 .623.211 1.044.211 1.044s-.694 2.934-.821 3.479c-.142.605-.086 1.454-.025 2.008-2.603-1.02-4.442-3.57-4.442-6.555 0-3.866 3.135-7 7-7s7 3.134 7 7-3.135 7-7 7z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.387 7.627 11.093-.105-.944-.2-2.395.042-3.428.219-.97 1.41-6.18 1.41-6.18s-.36-.72-.36-1.78c0-1.67.97-2.92 2.18-2.92 1.03 0 1.53.77 1.53 1.7 0 1.04-.66 2.6-1 4.05-.29 1.23.62 2.23 1.84 2.23 2.21 0 3.91-2.33 3.91-5.7 0-2.98-2.14-5.07-5.2-5.07-3.54 0-5.62 2.65-5.62 5.39 0 1.07.41 2.22.92 2.84.1.12.11.23.08.35-.09.38-.29 1.23-.33 1.4-.05.21-.17.25-.39.15-1.45-.59-2.36-2.44-2.36-3.93 0-3.2 2.61-6.89 7.78-6.89 4.16 0 6.89 3.01 6.89 6.25 0 4.27-2.37 7.45-5.89 7.45-1.18 0-2.29-.64-2.67-1.36l-.73 2.78c-.21.8-.62 1.8-.92 2.41C9.7 23.82 10.84 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z" />
               </svg>
             </a>
             <a href="#" aria-label="LinkedIn">
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm13.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.38v4.59h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z" />
               </svg>
             </a>
           </SocialIcons>

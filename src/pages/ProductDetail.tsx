@@ -194,8 +194,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product }) => {
         </Tags>
 
         <Price>
-          <span className="current-price">${product.price.toFixed(2)}</span>
-          <span className="original-price">${product.originalPrice.toFixed(2)}</span>
+          <span className="current-price">${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</span>
+          <span className="original-price">${typeof product.originalPrice === 'number' ? product.originalPrice.toFixed(2) : 'N/A'}</span>
           <span className="discount">{product.discount}%</span>
         </Price>
 

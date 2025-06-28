@@ -182,7 +182,7 @@ const Cart: React.FC = () => {
             <ItemImage src={item.product.images[0]} alt={item.product.name} />
             <ItemInfo>
               <ItemName>{item.product.name}</ItemName>
-              <ItemPrice>${item.product.price.toFixed(2)}</ItemPrice>
+              <ItemPrice>${typeof item.product.price === 'number' ? item.product.price.toFixed(2) : 'N/A'}</ItemPrice>
             </ItemInfo>
             <QuantityControl>
               <QuantityButton
@@ -206,7 +206,7 @@ const Cart: React.FC = () => {
       <CartSummary>
         <Total>
           <span>Total:</span>
-          <span>${cart.total.toFixed(2)}</span>
+          <span>${typeof cart.total === 'number' ? cart.total.toFixed(2) : 'N/A'}</span>
         </Total>
         <CheckoutButton onClick={() => navigate('/cart-checkout')}>
           Proceed to Checkout

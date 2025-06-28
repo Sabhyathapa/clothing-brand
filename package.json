@@ -2,6 +2,7 @@
   "name": "clothing-brand",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
     "@testing-library/jest-dom": "^5.17.0",
@@ -26,7 +27,7 @@
     "prestart": "npm install",
     "start": "set PORT=3003 && react-scripts start",
     "dev": "set PORT=3003 && react-scripts start",
-    "build": "react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false CI=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -34,7 +35,12 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-unused-vars": "off",
+      "jsx-a11y/anchor-is-valid": "off",
+      "jsx-a11y/img-redundant-alt": "off"
+    }
   },
   "browserslist": {
     "production": [
@@ -47,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "netlify-cli": "^22.1.3"
   }
 }

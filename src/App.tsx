@@ -8,6 +8,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import JeansPage from './pages/JeansPage';
 import TShirtPage from './pages/TShirtPage';
+import ShirtPage from './pages/ShirtPage';
 import { useState, useEffect, useRef } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import AuthPage from './pages/AuthPage';
@@ -16,6 +17,7 @@ import Cart from './components/Cart';
 import CartCheckout from './components/CartCheckout';
 import ContactPage from './pages/ContactPage';
 import AboutPage from './pages/AboutPage';
+import ErrorBoundary from './components/ErrorBoundary';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -410,6 +412,7 @@ const Navigation = () => {
             <DropdownContent className="dropdown-content" style={{position: 'static', boxShadow: 'none', background: 'none', minWidth: 'unset', padding: 0, marginTop: 0}}>
               <div onClick={() => { navigate('/category/jeans'); setIsMenuOpen(false); }}>JEANS</div>
               <div onClick={() => { navigate('/category/t-shirts'); setIsMenuOpen(false); }}>T-SHIRTS</div>
+              <div onClick={() => { navigate('/category/shirts'); setIsMenuOpen(false); }}>SHIRTS</div>
             </DropdownContent>
           </ShopDropdown>
           <div onClick={() => { navigate('/about'); setIsMenuOpen(false); }}>ABOUT</div>
@@ -886,6 +889,7 @@ const Button = styled.button`
 const Layout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -893,6 +897,7 @@ const Layout = () => {
 
   return (
     <AppContainer>
+      <Navigation />
       <HamburgerMenu 
         $isOpen={isMenuOpen}
         onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -904,7 +909,13 @@ const Layout = () => {
       
       <MenuOverlay $isOpen={isMenuOpen}>
         <MenuContent $isOpen={isMenuOpen}>
-          <Navigation />
+          <div onClick={() => { navigate('/'); setIsMenuOpen(false); }}>HOME</div>
+          <div onClick={() => { navigate('/category/jeans'); setIsMenuOpen(false); }}>JEANS</div>
+          <div onClick={() => { navigate('/category/t-shirts'); setIsMenuOpen(false); }}>T-SHIRTS</div>
+          <div onClick={() => { navigate('/category/shirts'); setIsMenuOpen(false); }}>SHIRTS</div>
+          <div onClick={() => { navigate('/about'); setIsMenuOpen(false); }}>ABOUT</div>
+          <div onClick={() => { navigate('/contact'); setIsMenuOpen(false); }}>CONTACT</div>
+          <div onClick={() => { navigate('/cart'); setIsMenuOpen(false); }}>CART</div>
         </MenuContent>
       </MenuOverlay>
 
@@ -995,22 +1006,22 @@ const HomePage = () => {
       <FooterSection>
         <FooterContent>
           <SocialIcons>
-            <a href="#" aria-label="Twitter">
+            <a href="javascript:void(0)" aria-label="Twitter">
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22.46 6c-.77.35-1.6.59-2.47.7a4.3 4.3 0 0 0 1.88-2.37 8.59 8.59 0 0 1-2.72 1.04A4.28 4.28 0 0 0 16.11 4c-2.37 0-4.29 1.92-4.29 4.29 0 .34.04.67.11.99C7.69 9.13 4.07 7.38 1.64 4.7c-.37.64-.58 1.38-.58 2.17 0 1.5.76 2.82 1.92 3.6-.71-.02-1.38-.22-1.97-.54v.05c0 2.1 1.5 3.85 3.5 4.25-.36.1-.74.16-1.13.16-.28 0-.54-.03-.8-.08.54 1.7 2.1 2.94 3.95 2.97A8.6 8.6 0 0 1 2 19.54c-.29 0-.57-.02-.85-.05A12.13 12.13 0 0 0 8.29 21.5c7.55 0 11.68-6.26 11.68-11.68 0-.18-.01-.36-.02-.54A8.18 8.18 0 0 0 24 4.59a8.36 8.36 0 0 1-2.54.7z" />
               </svg>
             </a>
-            <a href="#" aria-label="Instagram">
+            <a href="javascript:void(0)" aria-label="Instagram">
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2.2c3.2 0 3.584.012 4.85.07 1.17.054 1.97.24 2.43.41.59.22 1.01.48 1.45.92.44.44.7.86.92 1.45.17.46.36 1.26.41 2.43.058 1.266.07 1.65.07 4.85s-.012 3.584-.07 4.85c-.054 1.17-.24 1.97-.41 2.43-.22.59-.48 1.01-.92 1.45-.44.44-.86.7-1.45.92-.46.17-1.26.36-2.43.41-1.266.058-1.65.07-4.85.07s-3.584-.012-4.85-.07c-1.17-.054-1.97-.24-2.43-.41-.59-.22-1.01-.48-1.45-.92-.44-.44-.7-.86-.92-1.45-.17-.46-.36-1.26-.41-2.43C2.212 15.784 2.2 15.4 2.2 12s.012-3.584.07-4.85c.054-1.17.24-1.97.41-2.43.22-.59.48-1.01.92-1.45.44-.44.86-.7 1.45-.92.46-.17 1.26-.36 2.43-.41C8.416 2.212 8.8 2.2 12 2.2zm0-2.2C8.74 0 8.332.014 7.052.072 2.694.272.272 2.694.072 7.052.014 8.332 0 8.74 0 12c0 3.26.014 3.668.072 4.948.2 4.358 2.622 6.78 6.98 6.98C8.332 23.986 8.74 24 12 24c3.26 0 3.668-.014 4.948-.072 4.358-.2 6.78-2.622 6.98-6.98.058-1.28.072-1.688.072-4.948 0-3.26-.014-3.668-.072-4.948-.2-4.358-2.622-6.78-6.98-6.98C15.668.014 15.26 0 12 0z" />
               </svg>
             </a>
-            <a href="#" aria-label="Pinterest">
+            <a href="javascript:void(0)" aria-label="Pinterest">
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.387 7.627 11.093-.105-.944-.2-2.395.042-3.428.219-.97 1.41-6.18 1.41-6.18s-.36-.72-.36-1.78c0-1.67.97-2.92 2.18-2.92 1.03 0 1.53.77 1.53 1.7 0 1.04-.66 2.6-1 4.05-.29 1.23.62 2.23 1.84 2.23 2.21 0 3.91-2.33 3.91-5.7 0-2.98-2.14-5.07-5.2-5.07-3.54 0-5.62 2.65-5.62 5.39 0 1.07.41 2.22.92 2.84.1.12.11.23.08.35-.09.38-.29 1.23-.33 1.4-.05.21-.17.25-.39.15-1.45-.59-2.36-2.44-2.36-3.93 0-3.2 2.61-6.89 7.78-6.89 4.16 0 6.89 3.01 6.89 6.25 0 4.27-2.37 7.45-5.89 7.45-1.18 0-2.29-.64-2.67-1.36l-.73 2.78c-.21.8-.62 1.8-.92 2.41C9.7 23.82 10.84 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z" />
               </svg>
             </a>
-            <a href="#" aria-label="LinkedIn">
+            <a href="javascript:void(0)" aria-label="LinkedIn">
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm13.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.38v4.59h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z" />
               </svg>
@@ -1020,25 +1031,25 @@ const HomePage = () => {
             <FooterLinks>
               <h3>PRODUCT</h3>
               <ul>
-                <li><a href="#">New Arrivals</a></li>
-                <li><a href="#">Best Sellers</a></li>
-                <li><a href="#">Sale</a></li>
+                <li><a href="javascript:void(0)">New Arrivals</a></li>
+                <li><a href="javascript:void(0)">Best Sellers</a></li>
+                <li><a href="javascript:void(0)">Sale</a></li>
               </ul>
             </FooterLinks>
             <FooterLinks>
               <h3>COMPANY</h3>
               <ul>
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Contact</a></li>
-                <li><a href="#">Careers</a></li>
+                <li><a href="javascript:void(0)">About Us</a></li>
+                <li><a href="javascript:void(0)">Contact</a></li>
+                <li><a href="javascript:void(0)">Careers</a></li>
               </ul>
             </FooterLinks>
             <FooterLinks>
               <h3>SUPPORT</h3>
               <ul>
-                <li><a href="#">FAQ</a></li>
-                <li><a href="#">Shipping</a></li>
-                <li><a href="#">Returns</a></li>
+                <li><a href="javascript:void(0)">FAQ</a></li>
+                <li><a href="javascript:void(0)">Shipping</a></li>
+                <li><a href="javascript:void(0)">Returns</a></li>
               </ul>
             </FooterLinks>
           </FooterGrid>
@@ -1048,28 +1059,50 @@ const HomePage = () => {
   );
 };
 
+const ProductDetailWrapper = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      if (id) {
+        const data = await getProductById(id);
+        setProduct(data);
+      }
+    };
+    fetchProduct();
+  }, [id]);
+
+  if (!product) return <div>Loading...</div>;
+  return <ProductDetail product={product} />;
+};
+
 const App = () => {
   return (
-    <Router>
+    <ErrorBoundary>
       <AuthProvider>
         <CartProvider>
-      <Routes>
-            <Route element={<Layout />}>
-        <Route path="/" element={<HomePage />} />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route path="/product/:id" element={<ProductCheckout />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/cart-checkout" element={<CartCheckout />} />
-              <Route path="/category/jeans" element={<JeansPage />} />
-              <Route path="/category/t-shirt" element={<TShirtPage />} />
-              <Route path="/checkout" element={<ProductCheckout />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/about" element={<AboutPage />} />
-            </Route>
-      </Routes>
+          <Router>
+            <AppContainer>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<HomePage />} />
+                  <Route path="category/jeans" element={<JeansPage />} />
+                  <Route path="category/t-shirts" element={<TShirtPage />} />
+                  <Route path="category/shirts" element={<ShirtPage />} />
+                  <Route path="about" element={<AboutPage />} />
+                  <Route path="contact" element={<ContactPage />} />
+                  <Route path="auth" element={<AuthPage />} />
+                  <Route path="cart" element={<Cart />} />
+                  <Route path="checkout" element={<CartCheckout />} />
+                  <Route path="product/:id" element={<ProductDetailWrapper />} />
+                </Route>
+              </Routes>
+            </AppContainer>
+          </Router>
         </CartProvider>
       </AuthProvider>
-    </Router>
+    </ErrorBoundary>
   );
 };
 

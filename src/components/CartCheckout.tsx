@@ -174,7 +174,7 @@ const CartCheckout: React.FC = () => {
               <ItemInfo>
                 <ItemName>{item.product.name}</ItemName>
                 <ItemPrice>
-                  ${item.product.price.toFixed(2)} x {item.quantity}
+                  ${typeof item.product.price === 'number' ? item.product.price.toFixed(2) : 'N/A'} x {item.quantity}
                 </ItemPrice>
               </ItemInfo>
             </CheckoutItem>
@@ -184,19 +184,19 @@ const CartCheckout: React.FC = () => {
           <SummaryTitle>Order Summary</SummaryTitle>
           <SummaryItem>
             <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>${typeof subtotal === 'number' ? subtotal.toFixed(2) : 'N/A'}</span>
           </SummaryItem>
           <SummaryItem>
             <span>Shipping</span>
-            <span>${shipping.toFixed(2)}</span>
+            <span>${typeof shipping === 'number' ? shipping.toFixed(2) : 'N/A'}</span>
           </SummaryItem>
           <SummaryItem>
             <span>Tax</span>
-            <span>${tax.toFixed(2)}</span>
+            <span>${typeof tax === 'number' ? tax.toFixed(2) : 'N/A'}</span>
           </SummaryItem>
           <Total>
             <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>${typeof total === 'number' ? total.toFixed(2) : 'N/A'}</span>
           </Total>
           <PlaceOrderButton
             onClick={handlePlaceOrder}

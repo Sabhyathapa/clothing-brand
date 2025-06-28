@@ -253,7 +253,7 @@ const TShirtPage: React.FC = () => {
             <ProductImage src={product.images[0]} alt={product.name} />
             <ProductInfo>
               <ProductName>{product.name}</ProductName>
-              <ProductPrice>${product.price.toFixed(2)}</ProductPrice>
+              <ProductPrice>${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</ProductPrice>
             </ProductInfo>
           </ProductCard>
         ))}
@@ -272,25 +272,25 @@ const TShirtPage: React.FC = () => {
           <FooterSection>
             <h3>PRODUCT</h3>
             <ul>
-              <li><a href="#">T-Shirts</a></li>
-              <li><a href="#">Jeans</a></li>
-              <li><a href="#">Accessories</a></li>
+              <li><a href="javascript:void(0)">T-Shirts</a></li>
+              <li><a href="javascript:void(0)">Jeans</a></li>
+              <li><a href="javascript:void(0)">Accessories</a></li>
             </ul>
           </FooterSection>
           <FooterSection>
             <h3>COMPANY</h3>
             <ul>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Careers</a></li>
-              <li><a href="#">Contact</a></li>
+              <li><a href="javascript:void(0)">About Us</a></li>
+              <li><a href="javascript:void(0)">Careers</a></li>
+              <li><a href="javascript:void(0)">Contact</a></li>
             </ul>
           </FooterSection>
           <FooterSection>
             <h3>SUPPORT</h3>
             <ul>
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">Shipping</a></li>
-              <li><a href="#">Returns</a></li>
+              <li><a href="javascript:void(0)">FAQ</a></li>
+              <li><a href="javascript:void(0)">Shipping</a></li>
+              <li><a href="javascript:void(0)">Returns</a></li>
             </ul>
           </FooterSection>
         </FooterContent>

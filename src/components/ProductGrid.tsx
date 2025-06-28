@@ -261,10 +261,10 @@ const ProductGrid: React.FC = () => {
             <ProductInfo>
               <ProductTitle>{product.name}</ProductTitle>
               <PriceContainer>
-                <ProductPrice>${product.price.toFixed(2)}</ProductPrice>
-                {product.originalPrice && (
+                <ProductPrice>${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</ProductPrice>
+                {typeof product.originalPrice === 'number' ? (
                   <OldPrice>${product.originalPrice.toFixed(2)}</OldPrice>
-                )}
+                ) : null}
               </PriceContainer>
               {product.discount > 0 && (
                 <DiscountTag>{product.discount}% OFF</DiscountTag>

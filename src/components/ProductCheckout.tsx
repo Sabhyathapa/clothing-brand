@@ -266,8 +266,8 @@ const ProductCheckout: React.FC = () => {
         </div>
 
         <PriceContainer>
-          <CurrentPrice>${product.price.toFixed(2)}</CurrentPrice>
-          {product.originalPrice && (
+          <CurrentPrice>${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</CurrentPrice>
+          {typeof product.originalPrice === 'number' && (
             <OldPrice>${product.originalPrice.toFixed(2)}</OldPrice>
           )}
           {product.discount > 0 && (

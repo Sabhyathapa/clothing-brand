@@ -237,11 +237,11 @@ const ProductPage: React.FC = () => {
         <ProductInfo>
           <ProductTitle>{product.name}</ProductTitle>
           <ProductPrice>
-            ${product.price.toFixed(2)}
+]            ${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}
             {product.discount > 0 && (
               <>
                 <span style={{ textDecoration: 'line-through', color: '#999', marginLeft: '10px', fontSize: '1rem' }}>
-                  ${product.originalPrice.toFixed(2)}
+                  ${typeof product.originalPrice === 'number' ? product.originalPrice.toFixed(2) : 'N/A'}
                 </span>
                 <span style={{ color: '#4CAF50', marginLeft: '10px', fontSize: '1rem' }}>
                   {product.discount}% OFF

@@ -247,7 +247,7 @@ const ShirtPage: React.FC = () => {
       </PageHeader>
       <ProductGrid>
         {products.map((product) => (
-          <ProductCard key={product.id} onClick={() => navigate(`/product/${product.id}`)}>
+          <ProductCard key={product.id} onClick={() => navigate(`/products/${product.id}`)}>
             <ProductImage src={product.images[0]} alt={product.name} />
             <ProductInfo>
               <ProductName>{product.name}</ProductName>

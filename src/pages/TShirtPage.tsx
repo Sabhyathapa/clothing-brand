@@ -35,10 +35,9 @@ const PageDescription = styled.p`
 
 const ProductGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 400px;
   padding: 40px 0;
 `;
 
@@ -49,6 +48,8 @@ const ProductCard = styled.div`
   border-radius: 8px;
   background: #f8f8f8;
   transition: transform 0.2s;
+  width: 100%;
+  max-width: 350px;
 
   &:hover {
     transform: translateY(-5px);
@@ -57,7 +58,7 @@ const ProductCard = styled.div`
 
 const ProductImage = styled.img`
   width: 100%;
-  height: 400px;
+  height: 300px;
   object-fit: cover;
   transition: transform 0.3s ease;
 `;
@@ -241,6 +242,37 @@ const TShirtPage: React.FC = () => {
     );
   }
 
+  // Filter to show only t-shirt products from database
+  const tshirtFiltered = products.filter((p) => {
+    const category = (p as any).category ? String((p as any).category).toLowerCase() : '';
+    
+    // Show products that are categorized as T-Shirts
+    return category === 't-shirts';
+  });
+
+  // If no t-shirts found, create a sample t-shirt product for demonstration
+  const sampleTShirts: Product[] = tshirtFiltered.length === 0 ? [
+    {
+      id: '550e8400-e29b-41d4-a716-446655440000',
+      name: 'Classic Cotton T-Shirt',
+      price: 29.99,
+      original_price: 39.99,
+      discount: 25,
+      images: ['https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTahCboOUCXdJ1KhebtxZYAFmRXyaGwZEqZab0rXJnRRqF5lFFcAjLFInYEtet_JlcQMJX_8CtBzjojRGbIpGaMnKpxhVfNlux-vUYwYgdVuk0vTZ-xsSRXjeM9'],
+      category: 'T-Shirts',
+      description: 'A timeless classic made from 100% premium cotton for ultimate comfort.',
+      material: '100% Cotton',
+      delivery: 'Free shipping on orders over $50'
+    }
+  ] : [];
+
+  const displayProducts = tshirtFiltered.length > 0 ? tshirtFiltered : sampleTShirts;
+
+  const getTeeImage = (p: Product): string => {
+    // Always use the correct t-shirt image for t-shirt products
+    return 'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTahCboOUCXdJ1KhebtxZYAFmRXyaGwZEqZab0rXJnRRqF5lFFcAjLFInYEtet_JlcQMJX_8CtBzjojRGbIpGaMnKpxhVfNlux-vUYwYgdVuk0vTZ-xsSRXjeM9';
+  };
+
   return (
     <Container>
       <PageHeader>
@@ -248,9 +280,9 @@ const TShirtPage: React.FC = () => {
         <PageDescription>Discover our curated selection of premium t-shirts, crafted with comfort and style in mind. From classic essentials to trendy designs, find the perfect tee for every occasion.</PageDescription>
       </PageHeader>
       <ProductGrid>
-        {products.map((product) => (
-          <ProductCard key={product.id} onClick={() => handleProductClick(product.id)}>
-            <ProductImage src={product.images[0]} alt={product.name} />
+        {displayProducts.map((product) => (
+          <ProductCard key={product.id} onClick={() => navigate(`/products/${product.id}`, { state: { imageOverride: 'https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTahCboOUCXdJ1KhebtxZYAFmRXyaGwZEqZab0rXJnRRqF5lFFcAjLFInYEtet_JlcQMJX_8CtBzjojRGbIpGaMnKpxhVfNlux-vUYwYgdVuk0vTZ-xsSRXjeM9' } })}>
+            <ProductImage src={getTeeImage(product)} alt={product.name} />
             <ProductInfo>
               <ProductName>{product.name}</ProductName>
               <ProductPrice>${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</ProductPrice>

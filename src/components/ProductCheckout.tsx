@@ -125,8 +125,8 @@ const SizeButton = styled.button<{ disabled?: boolean }>`
   border: 1px solid #ddd;
   background: white;
   border-radius: 4px;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  opacity: ${props => props.disabled ? 0.5 : 1};
+  cursor: ${(props: { disabled?: boolean }) => props.disabled ? 'not-allowed' : 'pointer'};
+  opacity: ${(props: { disabled?: boolean }) => props.disabled ? 0.5 : 1};
   transition: all 0.2s;
 
   &:hover:not(:disabled) {
@@ -267,8 +267,8 @@ const ProductCheckout: React.FC = () => {
 
         <PriceContainer>
           <CurrentPrice>${typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</CurrentPrice>
-          {typeof product.originalPrice === 'number' && (
-            <OldPrice>${product.originalPrice.toFixed(2)}</OldPrice>
+          {typeof product.original_price === 'number' && (
+            <OldPrice>${product.original_price.toFixed(2)}</OldPrice>
           )}
           {product.discount > 0 && (
             <Discount>{product.discount}% OFF</Discount>
@@ -325,5 +325,3 @@ const ProductCheckout: React.FC = () => {
     </CheckoutContainer>
   );
 };
-
-export default ProductCheckout; 

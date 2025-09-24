@@ -147,7 +147,6 @@ const EmptyCart = styled.div`
 const Cart: React.FC = () => {
   const navigate = useNavigate();
   const { cart, loading, error, updateQuantity, removeFromCart } = useCart();
-  const { user } = useAuth();
 
   if (loading) {
     return <CartContainer>Loading cart...</CartContainer>;
@@ -208,7 +207,7 @@ const Cart: React.FC = () => {
           <span>Total:</span>
           <span>${typeof cart.total === 'number' ? cart.total.toFixed(2) : 'N/A'}</span>
         </Total>
-        <CheckoutButton onClick={() => navigate('/cart-checkout')}>
+        <CheckoutButton onClick={() => navigate('/checkout')}>
           Proceed to Checkout
         </CheckoutButton>
       </CartSummary>
@@ -216,4 +215,5 @@ const Cart: React.FC = () => {
   );
 };
 
-export default Cart; 
+export default Cart;
+

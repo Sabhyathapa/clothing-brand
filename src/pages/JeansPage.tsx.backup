@@ -316,17 +316,34 @@ const JeansPage: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  // Filter to show only jeans products from database
+  // Strict jeans-only filter in case of mislabelled items
   const jeansFiltered = products.filter((p) => {
+    const url = (p.images && p.images[0]) ? p.images[0].toLowerCase() : '';
+    const name = (p.name || '').toLowerCase();
     const category = (p as any).category ? String((p as any).category).toLowerCase() : '';
-    
-    // Show products that are categorized as Jeans
-    return category === 'jeans';
+
+    const looksJeansByName = /(jean|denim|pant|trouser)/.test(name);
+    const looksJeansByUrl = /(jean|denim|pant|trouser)/.test(url);
+    const isJeansByCategory = /jeans?/.test(category);
+
+    const looksShirtByName = /(shirt|tee|t\-?shirt|top)/.test(name);
+    const looksShirtByUrl = /(shirt|tee|tshirt|top)/.test(url);
+    const isShirtByCategory = /t\-?shirts?|shirts?/.test(category);
+
+    const isJeans = looksJeansByName || looksJeansByUrl || isJeansByCategory;
+    const isShirt = looksShirtByName || looksShirtByUrl || isShirtByCategory;
+    return isJeans && !isShirt;
   });
 
   const getJeansImage = (p: Product): string => {
-    // Always use the correct jeans image for jeans products
-    return 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcR5E47qNGf3blLIdzwSSk_cus4HXgJEN4o9TuUoAD20chHjU0ueru-3ZvbAEuwB7jli7iYWIy2wr9WlZHTxEA1ag_Dt0440sMZE1PP9veMSKNbvfveAOAbCFw';
+    const urls = (Array.isArray(p.images) ? p.images : []).map(u => String(u || ''));
+    const isJeans = (u: string) => /(jean|denim|pant|trouser)/i.test(u);
+    const isShirt = (u: string) => /(shirt|tee|tshirt|t\-?shirt|top)/i.test(u);
+    const byJeans = urls.find(isJeans);
+    if (byJeans) return byJeans;
+    const notShirt = urls.find(u => !isShirt(u));
+    if (notShirt) return notShirt;
+    return urls[0] || '';
   };
 
   return (
@@ -336,7 +353,8 @@ const JeansPage: React.FC = () => {
         <PageDescription>Explore our premium collection of jeans, featuring timeless classics and contemporary styles. From slim fit to relaxed, find the perfect pair that matches your style.</PageDescription>
       </PageHeader>
       <ProductGrid>
-        {jeansFiltered.map((product) => (          <ProductCard key={product.id} onClick={() => navigate(`/products/${product.id}`, { state: { imageOverride: 'https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcR5E47qNGf3blLIdzwSSk_cus4HXgJEN4o9TuUoAD20chHjU0ueru-3ZvbAEuwB7jli7iYWIy2wr9WlZHTxEA1ag_Dt0440sMZE1PP9veMSKNbvfveAOAbCFw' } })}>
+        {jeansFiltered.map((product) => (
+          <ProductCard key={product.id} onClick={() => navigate(`/products/${product.id}`)}>
             <ProductImage src={getJeansImage(product)} alt={product.name} />
             <ProductInfo>
               <ProductTitle>{product.name}</ProductTitle>

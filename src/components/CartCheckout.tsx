@@ -210,4 +210,5 @@ const CartCheckout: React.FC = () => {
   );
 };
 
-export default CartCheckout; 
+export default CartCheckout;
+

@@ -3,7 +3,11 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
+console.log('Supabase URL:', supabaseUrl ? 'Set' : 'Missing');
+console.log('Supabase Anon Key:', supabaseAnonKey ? 'Set' : 'Missing');
+
 if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing Supabase environment variables');
   throw new Error('Missing Supabase environment variables');
 }
 
@@ -14,7 +18,7 @@ export type Product = {
   id: string;
   name: string;
   price: number;
-  originalPrice: number;
+  original_price: number;
   discount: number;
   images: string[];
   category: string;
@@ -94,4 +98,4 @@ export const insertUserData = async (userId: string, email: string) => {
   }
 
   return data;
-}; 
+}

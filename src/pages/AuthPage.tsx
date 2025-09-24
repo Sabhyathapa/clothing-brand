@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { supabase, insertUserData } from '../lib/supabase';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 const AuthContainer = styled.div`
   min-height: 100vh;
@@ -26,6 +26,7 @@ const Title = styled.h1`
   color: #333;
   margin-bottom: 1.5rem;
   text-align: center;
+  font-weight: 500;
 `;
 
 const Form = styled.form`
@@ -107,7 +108,7 @@ const AuthPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,14 +154,14 @@ const AuthPage = () => {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             required
           />
           <Input
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             required
             minLength={6}
           />
@@ -181,4 +182,5 @@ const AuthPage = () => {
   );
 };
 
-export default AuthPage; 
+export default AuthPage;
+

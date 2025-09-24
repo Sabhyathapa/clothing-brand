@@ -30,6 +30,20 @@ const GlobalStyles = createGlobalStyle`
     max-width: 100%;
     height: auto;
   }
+
+  .home-image {
+    width: 460px;
+    height: 540px;
+    object-fit: cover;
+    border-radius: 1.2rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);
+    cursor: pointer;
+  }
+  .home-image:hover {
+    transform: scale(1.01) translateY(-8px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.28);
+  }
 `;
 
 export default GlobalStyles; 
